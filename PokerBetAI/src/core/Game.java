@@ -1,4 +1,4 @@
-package sourcepkg;
+package core;
 
 import java.util.Scanner;
 
@@ -6,7 +6,7 @@ public class Game {
 	private Deck deck;
 	private Card[] player;
 	private Card[] cpu;
-	private Card[] board;
+	private Card[] board; //toString method/print manually
 	private int round;
 	private int playerchips;
 	private int cpuchips;
@@ -41,7 +41,7 @@ public class Game {
 		
 		//take blinds
 		pot += blinds * 3;
-		if (round%2 == 0) {
+		if (round % 2 == 0) {
 			System.out.println("Dealer: Player");
 			playerchips -= 10;
 			cpuchips -=20;
@@ -57,17 +57,15 @@ public class Game {
 		System.out.println("Board is empty");
 		
 		//round of betting
-		bettingRound();
-		
-
-		
-		 
+		bettingRound();	 
 	}
 	
 	public int playerBet() {
+		printGameState();
 		System.out.print("Player bet: ");
 		Scanner s = new Scanner(System.in);
-		int pb = s.nextInt();
+		int pb = s.nextInt(); 
+		//catch if invalid
 		System.out.println("\n");
 		pot += pb;
 		playerchips -= pb;
@@ -75,7 +73,7 @@ public class Game {
 	}
 	
 	public int computerBet() {
-		return 0;
+		//return bet from BetCalculator class
 	}
 	
 	public void bettingRound(int ) {
@@ -83,17 +81,24 @@ public class Game {
 		int cpuTotal = 0;
 		int betcycle = 0;
 		
-		while (playerTotal != cpuTotal && betcycle < 2) {
+		//who goes first
+		//first two turns (1 complete round)
+		//prompt user w/ check, fold, raise
+			//p2 can only check if p1 checks
+			//fold = game over. all money goes to other person
+			//raise
+		
+		while (playerTotal != cpuTotal || betcycle < 2 ){
 			if (round % 2 == 0) {
-				playerTotal += playerBet();
-				cpuTotal += computerBet();  
+				playerTotal += playerBet(); //1 = reg, 0 = allin, -1 = fold
+				cpuTotal += computerBet();
 			}
 			else {
 				cpuTotal += computerBet();
 				playerTotal += playerBet();
-			} 
-			
-		}
+			}
+			betcycle++;
+		}		
 	}
 	
 	public void printGameState() {
@@ -101,7 +106,7 @@ public class Game {
 		System.out.println("Your chips: " + playerchips);
 		System.out.println("Pot: " + pot);
 	}
-	}
+}
 	
 	
 	

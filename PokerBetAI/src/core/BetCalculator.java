@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 /*****************************************************************************/
  
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -20,7 +21,13 @@ public class BetCalculator {
 	//read in and store data based on previous hands
 	//Note: currently just a generic probability. Maybe expand later.
 	public BetCalculator(File prevHands) {
-		BufferedReader br = new BufferedReader(new FileReader(prevHands));
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(prevHands));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		String line = null;
 		
@@ -63,16 +70,38 @@ public class BetCalculator {
 			else return bet;
 	}
 	
+	//Returns computer bet based on bluff probability and cards known. Returns
+	//-1 if computer folds.
 	public int calcBet(Card[] compCards, Card[] shownCards, int pot) {
-		int primaryBet = primaryBet(compCards, shownCards, pot);
+		double primaryBet = primaryBet(compCards, shownCards, pot);
+		boolean bluffing;
+
+		double bluffProb = bluffProb();
+		if (bluffProb > 0.5) bluffing = true;
+		
+		if (bluffing) {
+			return Math.max(primaryBet, matchAmt);
+		}
+		if (Math.round(primaryBet + 0.5) < matchAmt) return -1;
+		return (int) Math.round(primaryBet + 0.5);
+
 	}
 	
+	//Return probability of bluffing
+	//Add learning based on past inputs
+	private double bluffProb() {
+		return 1.0 / 2;
+	}
+	
+	//Return computer bet based on known cards
 	private double primaryBet(Card[] compCards, Card[] shownCards, int pot) {
 		double probWin = probWin(compCards, shownCards);
 		return pot * probWin;
 	}
 	
-	double probWin(Card[] compCards, Card[] shownCards) {
-		ProbCalculator prob = new ProbCalculator (compCards, shownCards);
+	//Return probability of win
+	private double probWin(Card[] compCards, Card[] shownCards) {
+		ProbCalculator prob = new ProbCalculator(compCards, shownCards);
+		return prob.probWin();
 	}
 }

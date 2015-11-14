@@ -1,4 +1,4 @@
-package sourcepkg;
+package core;
 
 import java.util.Stack;
 
@@ -33,4 +33,4 @@ public class Deck {
 		return deck.pop();
 	}
 	
-	}
+}

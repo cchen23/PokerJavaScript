@@ -1,4 +1,4 @@
-package sourcepkg;
+package core;
 
 public class Card {
 	private int number;
@@ -80,5 +80,5 @@ public class Card {
 		
 		return n + " of " + s;
 			
-		}
 	}
+}

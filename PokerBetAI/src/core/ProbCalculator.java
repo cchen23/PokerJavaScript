@@ -86,15 +86,19 @@ public class ProbCalculator {
 		double straightProb = straightProb(playerCards, shownCards);
 		
 		int flushValue = 6;
-		double flushProb;
+		double flushProb = flushProb(playerCards, shownCards);
+		
 		int fullHouseValue = 7;
-		double fullHouseProb;
+		double fullHouseProb = fullHouseProb(playerCards, shownCards);
+		
 		int fourKindValue = 8;
-		double fourKindProb;
+		double fourKindProb = fourKindProb(playerCards, shownCards);
+		
 		int straightFlushValue = 9;
-		double straightFlushProb;
+		double straightFlushProb = straightFlushProb(playerCards, shownCards);
+		
 		int royalFlushValue = 10;
-		double royalFlushProb;
+		double royalFlushProb = royalFlushProb(playerCards, shownCards);
 	}
 	
 	//probability that hand will have a pair
@@ -177,7 +181,4 @@ public class ProbCalculator {
 		
 	}
 	
-	private double fourKindProb(Card[] playerCards, Card[] shownCards) {
-		
-	}
 }
