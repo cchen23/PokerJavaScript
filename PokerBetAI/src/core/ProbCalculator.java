@@ -177,5 +177,7 @@ public class ProbCalculator {
 		
 	}
 	
-	
+	private double fourKindProb(Card[] playerCards, Card[] shownCards) {
+		
+	}
 }
