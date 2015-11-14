@@ -13,6 +13,7 @@ public class Game {
 	private boolean allIn;
 	private int blinds;
 	private int pot;
+	private int matchAmt;
 	
 	public Game (int r, int pchips, int cchips) {
 		//player is on button during even rounds;
@@ -92,15 +93,36 @@ public class Game {
 			if (round % 2 == 0) {
 				playerTotal += playerBet(); //1 = reg, 0 = allin, -1 = fold
 				cpuTotal += computerBet();
+				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			else {
 				cpuTotal += computerBet();
 				playerTotal += playerBet();
+				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			betcycle++;
 		}		
 	}
 	
+	public Card[] getCompCards() {
+		return cpu;
+	}
+	
+	public Card[] getShownCards() {
+		return board;
+	}
+	
+	public int getCompChips() {
+		return cpuchips;
+	}
+	
+	public int getPot() {
+		return pot;
+	}
+	
+	public int getMatchAmt() {
+		return matchAmt;
+	}
 	public void printGameState() {
 		System.out.println("Your cards: " + player[0] + ", " + player[1]);
 		System.out.println("Your chips: " + playerchips);

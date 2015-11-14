@@ -24,10 +24,6 @@ public class BetCalculator {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(prevHands));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		String line = null;
 		
@@ -46,6 +42,10 @@ public class BetCalculator {
 		}
 		
 		probBluff = numBluffs / numGames;
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	//calculate bet
 	public int getBet(Game game) {
@@ -58,11 +58,14 @@ public class BetCalculator {
 		//get computer's chip amount
 		int numChips = game.getCompChips();
 		
-		//calculate bet
-		int bet = calcBet(compCards, shownCards, probBluff);
+		//get current pot size
+		int pot = game.getPot();
 		
 		//get user bet
-		int pot = game.getPot();
+		int matchAmt = game.getMatchAmt();
+				
+		//calculate bet
+		int bet = calcBet(compCards, shownCards, pot, matchAmt);
 		
 		//return bet
 			//if less than computer's number of chips, return numChips
@@ -72,16 +75,19 @@ public class BetCalculator {
 	
 	//Returns computer bet based on bluff probability and cards known. Returns
 	//-1 if computer folds.
-	public int calcBet(Card[] compCards, Card[] shownCards, int pot) {
+	public int calcBet(Card[] compCards, Card[] shownCards, int pot, 
+			int matchAmt) {
 		double primaryBet = primaryBet(compCards, shownCards, pot);
-		boolean bluffing;
+		
+		boolean bluffing = false;
 
 		double bluffProb = bluffProb();
 		if (bluffProb > 0.5) bluffing = true;
 		
 		if (bluffing) {
-			return Math.max(primaryBet, matchAmt);
+			return (int) Math.round(Math.max(primaryBet, matchAmt) + 0.5);
 		}
+		
 		if (Math.round(primaryBet + 0.5) < matchAmt) return -1;
 		return (int) Math.round(primaryBet + 0.5);
 
