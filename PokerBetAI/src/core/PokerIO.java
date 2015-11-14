@@ -49,6 +49,7 @@ public class PokerIO {
         }
     }
     
+    //Test
     public static void main(String[] args) throws IOException {
         Card card = new Card(5, 0);
         Card [] board = new Card [5];
