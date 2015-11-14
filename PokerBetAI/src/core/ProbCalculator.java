@@ -13,7 +13,7 @@ public class ProbCalculator {
 	public ProbCalculator (Card[] compCards, Card[] shownCards) {
 		this.compCards = compCards;
 		this.shownCards = shownCards;
-		numShown = shownCards.length();
+		numShown = shownCards.length;
 		numUnknownCards = SUITS * CARDS - numShown - HAND;
 	}
 	
@@ -27,7 +27,7 @@ public class ProbCalculator {
 		
 		//possible user cards
 		int numUserCards = SUITS * CARDS - numShown - HAND;
-		Card[] userCards = new int[numUserCards];
+		Card[] userCards = new Card[numUserCards];
 		
 		int count = 0;
 		for (int i = 0; i < SUITS; i++) {
@@ -50,8 +50,8 @@ public class ProbCalculator {
 			for (int j = 0; j < numUserCards; j++)
 				if (i != j) {
 					Card[] userPossibility = new Card[2];
-					Card[0] = userCards[i];
-					Card[1] = userCards[j];
+					userPossibility[0] = userCards[i];
+					userPossibility[1] = userCards[j];
 					int userRank = rank(userPossibility, shownCards);
 					if (compRank > userRank) ahead++;
 					else if (compRank == userRank) tied++;
@@ -108,7 +108,7 @@ public class ProbCalculator {
 		
 		//if pair already exists, probability is one
 			for (int i = 0; i < HAND; i++) {
-				int rank = playerCards[i].getNumber;
+				int rank = playerCards[i].getNumber();
 
 				for (Card d : shownCards) {
 					if (d.getNumber() == rank) {
@@ -146,7 +146,7 @@ public class ProbCalculator {
 					(double) numUnknownCards) * ((SUITS - 1) / 
 							(double) numUnknownCards);
 			if (numDistinctPairs == 1) return (SUITS - 1) / (double) numUnknownCards;
-			if (numDistinctPairs == 2) return 1;			
+			return 1;
 	}
 	
 	//approx probability that hand will have three of a kind
@@ -161,7 +161,7 @@ public class ProbCalculator {
 		}
 		
 		for (int i = 0; i < HAND; i++) {
-			rank = playerCards[i].getNumber();
+			int rank = playerCards[i].getNumber();
 			int numMatched = 0;
 			
 			for (Card d : shownCards) {

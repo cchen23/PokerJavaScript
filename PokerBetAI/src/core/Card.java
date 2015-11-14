@@ -9,7 +9,7 @@ public class Card {
 		suit = s;
 	}
 	
-	public int getNum() { return number; }
+	public int getNumber() { return number; }
 	
 	public int getSuit() { return suit; }
 	
