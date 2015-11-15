@@ -66,10 +66,13 @@ public class ProbCalculator {
 	//__Prob = probability of having __ type of hand
 	public int rank(Card[] playerCards, Card[] shownCards) {		
 		
-		double sumValue = 1;
+		double highValue = 1;
 		for (Card c : playerCards) {
-			sumValue += c.getNumber() / 13;
+			if (c.getNumber() highValue) {
+				highValue = c.getNumber();
+			}
 		}
+		highValue /= 13;
 		double sumProb = 1;
 		
 		int pairValue = 2;
@@ -178,6 +181,64 @@ public class ProbCalculator {
 	}
 	
 	private double straightProb(Card[] playerCards, Card[] shownCards) {
+		int length = 2 + showncards.length;
+		
+		int [] straightCheck = new int [length];
+		straightCheck[0] = playercards[0];
+		straightCheck[1] = playercards[1];
+		for (int i = 0; i < shownCards.length; i++){
+			straightCheck[i + 2] = shownCards[i];
+		}
+		
+		//Selection sorting
+		for (int i = 1; i < length; i++) {
+            		int x = straightCheck[i];
+      			int j = i;
+        		while (j > 0 && straightCheck[j - 1] > x) {
+                	straightCheck[j] = straightCheck[j - 1]; 
+                	j--;
+                	straightCheck[j] = x;
+            		}
+        	}
+        	
+        	int tracker = 0;
+        	for (int i = 0; i < length; i++) {
+        		if ((straighCheck[i] + 1) == straightCheck[i+1]) {
+        			tracker++;
+        		}
+        		else {
+        			tracker = 0;
+        		}
+        	}
+		if (tracker > 4) {
+			return 1;
+		}
+		if (tracker == 4) {
+			//return
+		}
+		if (tracker == 3) {
+			//return	
+		}
+		return 0;
+	}
+	
+	private double flushProb(Card[] playerCards, Card[] shownCards) {
+		
+	}
+	
+	private double fullProb(Card[] playerCards, Card[] shownCards) {
+		
+	}
+	
+	private double fourKindProb(Card[] playerCards, Card[] shownCards) {
+		
+	}
+	
+	private double straightFlushProb(Card[] playerCards, Card[] shownCards) {
+		
+	}
+	
+	private double royalFlushProb(Card[] playerCards, Card[] shownCards) {
 		
 	}
 	
