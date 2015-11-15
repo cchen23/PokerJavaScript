@@ -48,21 +48,8 @@ public class BetCalculator {
 		}
 	}
 	//calculate bet
-	public int getBet(Game game) {
-		//get computer's cards
-		Card[] compCards = game.getCompCards();
-		
-		//get shown cards
-		Card[] shownCards = game.getShownCards();
-		
-		//get computer's chip amount
-		int numChips = game.getCompChips();
-		
-		//get current pot size
-		int pot = game.getPot();
-		
-		//get user bet
-		int matchAmt = game.getMatchAmt();
+	public int getBet(Card[] compCards, Card[] shownCards, int numChips, 
+			int pot, int matchAmt) {
 				
 		//calculate bet
 		int bet = calcBet(compCards, shownCards, pot, matchAmt);

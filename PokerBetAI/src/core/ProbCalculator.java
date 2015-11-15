@@ -7,7 +7,7 @@ public class ProbCalculator {
 	private final int SUITS = 4; //diamond, heart, club, spade
 	private final int CARDS = 13; //2 - 10, J - A
 	private final int HAND = 2;
-	private int numUnknownCards; //cards w/ unkown vals (in deck or user hand)
+	private int numUnknownCards; //cards w/ unknown vals (in deck or user hand)
 	private int numShown;
 		
 	public ProbCalculator (Card[] compCards, Card[] shownCards) {

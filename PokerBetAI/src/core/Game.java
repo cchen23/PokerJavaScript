@@ -1,8 +1,11 @@
 package core;
 
+import java.io.File;
 import java.util.Scanner;
 
 public class Game {
+	private final int BIGBLIND = 20;
+	private final int SMALLBLIND = 10;
 	private Deck deck;
 	private Card[] player;
 	private Card[] cpu;
@@ -13,7 +16,8 @@ public class Game {
 	private boolean allIn;
 	private int blinds;
 	private int pot;
-	private int matchAmt;
+	private int matchAmt = BIGBLIND - SMALLBLIND;
+	File history;
 	
 	public Game (int r, int pchips, int cchips) {
 		//player is on button during even rounds;
@@ -42,15 +46,16 @@ public class Game {
 		
 		//take blinds
 		pot += blinds * 3;
+		
 		if (round % 2 == 0) {
 			System.out.println("Dealer: Player");
-			playerchips -= 10;
-			cpuchips -=20;
+			playerchips -= SMALLBLIND;
+			cpuchips -= BIGBLIND;
 		}
 		else {
 			System.out.println("Dealer: Computer");
-			playerchips -=20;
-			cpuchips -=10;
+			playerchips -= BIGBLIND;
+			cpuchips -= SMALLBLIND;
 		}
 
 		System.out.println("Blinds taken.");
@@ -58,31 +63,57 @@ public class Game {
 		System.out.println("Board is empty");
 		
 		//round of betting
-		bettingRound();	 
+		int fold = bettingRound();	 
 	}
 	
-	public int playerBet() {
+	//returns user bet. returns -1 if user folds
+	public int playerBet(int matchAmt) {
 		printGameState();
-		System.out.print("Player bet: ");
+		System.out.println("Raise, call, or fold?");
 		Scanner s = new Scanner(System.in);
-		int pb = s.nextInt(); 
-		//catch if invalid
-		System.out.println("\n");
-		pot += pb;
-		playerchips -= pb;
-		return pb;
+		String choice = s.next().toLowerCase();
+		
+		if (choice.equals("raise")) {
+			System.out.println("Enter bet amount: ");
+			int bet = s.nextInt();
+			while (bet > playerchips) {
+				System.out.println("Invalid bet. Enter bet amount: ");
+				int bet = s.nextInt();
+			}
+			pot += pb;
+			playerchips -= bet;
+			return bet;
+		}
+		else if (choice.equals("call")) {
+			if (playerchips >= matchAmt) {
+				pot += matchAmt;
+				playerchips -= matchAmt;
+				return matchAmt;
+			}
+			else {
+				pot += playerchips;
+				playerchips = 0;
+				return playerchips;
+			}
+		}
+		else if (choice.equals("fold")) {
+			return -1;
+		}
 	}
 	
 	public int computerBet() {
-		//return bet from BetCalculator class
+		BetCalculator bc = new BetCalculator(history);
+		return bc.getBet(cpu, board, cpuchips, pot, matchAmt);
 	}
 	
-	public void bettingRound(int ) {
+	//returns 0 if no one folds. returns -1 if computer folds.
+	//returns 1 if user folds.
+	
+	public int bettingRound() {
 		int playerTotal = 0;
 		int cpuTotal = 0;
 		int betcycle = 0;
 		
-		//who goes first
 		//first two turns (1 complete round)
 		//prompt user w/ check, fold, raise
 			//p2 can only check if p1 checks
@@ -91,38 +122,25 @@ public class Game {
 		
 		while (playerTotal != cpuTotal || betcycle < 2 ){
 			if (round % 2 == 0) {
-				playerTotal += playerBet(); //1 = reg, 0 = allin, -1 = fold
+				int playerBet = playerBet(matchAmt);
+				if (playerBet == -1) return 1;
+				playerTotal += playerBet;
+				matchAmt = Math.abs(playerTotal - cpuTotal);
+				int compBet = computerBet();
+				if (compBet == -1) return -1;
 				cpuTotal += computerBet();
 				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			else {
 				cpuTotal += computerBet();
-				playerTotal += playerBet();
+				matchAmt = Math.abs(playerTotal - cpuTotal);
+				playerTotal += playerBet(matchAmt);
 				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			betcycle++;
 		}		
 	}
 	
-	public Card[] getCompCards() {
-		return cpu;
-	}
-	
-	public Card[] getShownCards() {
-		return board;
-	}
-	
-	public int getCompChips() {
-		return cpuchips;
-	}
-	
-	public int getPot() {
-		return pot;
-	}
-	
-	public int getMatchAmt() {
-		return matchAmt;
-	}
 	public void printGameState() {
 		System.out.println("Your cards: " + player[0] + ", " + player[1]);
 		System.out.println("Your chips: " + playerchips);
