@@ -1,3 +1,5 @@
+package core;
+
 import java.io.*;
 
 public class PokerIO {
@@ -10,15 +12,15 @@ public class PokerIO {
             FileWriter fw = new FileWriter("handHistory.txt", true);
             BufferedWriter bw = new BufferedWriter(fw);
             for (int i = 0; i < 2; i++) {
-                bw.write(pHand[i].getSuit() + "." + pHand[i].getNum() + " ");
+                bw.write(pHand[i].getSuit() + "." + pHand[i].getNumber() + " ");
             }
             bw.write("\n");
             for (int i = 0; i < 2; i++) {
-                bw.write(cHand[i].getSuit() + "." + cHand[i].getNum() + " ");
+                bw.write(cHand[i].getSuit() + "." + cHand[i].getNumber() + " ");
             }
             bw.write("\n");
             for (int i = 0; i < 5; i++) {
-                bw.write(board[i].getSuit() + "." + board[i].getNum() + " ");
+                bw.write(board[i].getSuit() + "." + board[i].getNumber() + " ");
             }
             bw.write("\n");
             bw.write(bet + "\n\n");
@@ -32,15 +34,15 @@ public class PokerIO {
             FileWriter fw = new FileWriter(history);
             BufferedWriter bw = new BufferedWriter(fw);
             for (int i = 0; i < 2; i++) {
-                bw.write(pHand[i].getSuit() + "." + pHand[i].getNum() + " ");
+                bw.write(pHand[i].getSuit() + "." + pHand[i].getNumber() + " ");
             }
             bw.write("\n");
             for (int i = 0; i < 2; i++) {
-                bw.write(cHand[i].getSuit() + "." + cHand[i].getNum() + " ");
+                bw.write(cHand[i].getSuit() + "." + cHand[i].getNumber() + " ");
             }
             bw.write("\n");
             for (int i = 0; i < 5; i++) {
-                bw.write(board[i].getSuit() + "." + board[i].getNum() + " ");
+                bw.write(board[i].getSuit() + "." + board[i].getNumber() + " ");
             }
             bw.write("\n");
             bw.flush();

@@ -9,11 +9,11 @@ public class Game {
 	private Deck deck;
 	private Card[] player;
 	private Card[] cpu;
-	private Card[] board; //toString method/print manually
+	private Card[] board;
+	private int boardCards = 0;
 	private int round;
 	private int playerchips;
 	private int cpuchips;
-	private boolean allIn;
 	private int blinds;
 	private int pot;
 	private int matchAmt = BIGBLIND - SMALLBLIND;
@@ -28,14 +28,54 @@ public class Game {
 		deck = new Deck();
 		playerchips = pchips;
 		cpuchips = cchips;
-		allIn = false;
 		blinds = 10;		
 		pot = 0;
 		
 		printGameState();
 	}
 	
-	public void preflop() {
+	//returns int array result. result[0] gives user chips left. result[1] 
+	//gives computer chips left. result[2] gives pot. result[3] is 1 if
+	//computer won, -1 if user won.
+	//To Do: also writes game history to text file
+	public int[] playGame() {
+		int[] result = new int[3];
+		
+		int fold = preflop();
+		if (fold == 1) {
+			result[0] = playerchips;
+			result[1] = cpuchips;
+			result[2] = pot;
+			result[3] = -1;
+			return result;
+		}
+		if (fold == -1) {
+			result[0] = playerchips;
+			result[1] = cpuchips;
+			result[2] = pot;
+			result[3] = 1;
+			return result;
+		}
+		
+		postflop();
+		if (fold == 1) {
+			result[3] = -1;
+		}
+		else if (fold == -1) {
+			result[3] = 1;
+		}
+		else {
+			result[3] = cmp(player, cpu);
+		}
+		
+		result[0] = playerchips;
+		result[1] = cpuchips;
+		result[2] = pot;
+		return result;
+		
+	}
+	//returns -1 if computer folds, 1 if user folds, 0 otherwise
+	public int preflop() {
 		System.out.println("PREFLOP");
 		System.out.println("Cards dealt.");
 		//deal 2 cards to each player
@@ -57,13 +97,39 @@ public class Game {
 			playerchips -= BIGBLIND;
 			cpuchips -= SMALLBLIND;
 		}
-
+		
 		System.out.println("Blinds taken.");
 		printGameState();
 		System.out.println("Board is empty");
 		
 		//round of betting
 		int fold = bettingRound();	 
+		return fold;
+	}
+	
+	//returns -1 if computer folds, 1 if user folds, 0 otherwise
+	public int postflop() {
+		System.out.println("POSTFLOP");
+		
+		board[0] = deck.deal();
+		board[1] = deck.deal();
+		board[2] = deck.deal();
+		boardCards += 3;
+		printGameState();
+		int fold = bettingRound();
+		if (fold == 1 || fold == -1) return fold;
+		
+		board[4] = deck.deal();
+		boardCards++;
+		printGameState();
+		fold = bettingRound();
+		if (fold == 1 || fold == -1) return fold;
+		
+		board[5] = deck.deal();
+		boardCards++;
+		printGameState();
+		fold = bettingRound();
+		return fold;
 	}
 	
 	//returns user bet. returns -1 if user folds
@@ -73,31 +139,36 @@ public class Game {
 		Scanner s = new Scanner(System.in);
 		String choice = s.next().toLowerCase();
 		
-		if (choice.equals("raise")) {
-			System.out.println("Enter bet amount: ");
-			int bet = s.nextInt();
-			while (bet > playerchips) {
-				System.out.println("Invalid bet. Enter bet amount: ");
+		while (true) {
+			if (choice.equals("raise")) {
+				System.out.println("Enter bet amount: ");
 				int bet = s.nextInt();
+				while (bet > playerchips) {
+					System.out.println("Invalid bet. Enter bet amount: ");
+					bet = s.nextInt();
+				}
+				pot += bet;
+				playerchips -= bet;
+				return bet;
 			}
-			pot += pb;
-			playerchips -= bet;
-			return bet;
-		}
-		else if (choice.equals("call")) {
-			if (playerchips >= matchAmt) {
-				pot += matchAmt;
-				playerchips -= matchAmt;
-				return matchAmt;
+			else if (choice.equals("call")) {
+				if (playerchips >= matchAmt) {
+					pot += matchAmt;
+					playerchips -= matchAmt;
+					return matchAmt;
+				}
+				else {
+					pot += playerchips;
+					playerchips = 0;
+					return playerchips;
+				}
+			}
+			else if (choice.equals("fold")) {
+				return -1;
 			}
 			else {
-				pot += playerchips;
-				playerchips = 0;
-				return playerchips;
+				System.out.println("Invalid choice");
 			}
-		}
-		else if (choice.equals("fold")) {
-			return -1;
 		}
 	}
 	
@@ -108,17 +179,10 @@ public class Game {
 	
 	//returns 0 if no one folds. returns -1 if computer folds.
 	//returns 1 if user folds.
-	
 	public int bettingRound() {
 		int playerTotal = 0;
 		int cpuTotal = 0;
 		int betcycle = 0;
-		
-		//first two turns (1 complete round)
-		//prompt user w/ check, fold, raise
-			//p2 can only check if p1 checks
-			//fold = game over. all money goes to other person
-			//raise
 		
 		while (playerTotal != cpuTotal || betcycle < 2 ){
 			if (round % 2 == 0) {
@@ -126,25 +190,45 @@ public class Game {
 				if (playerBet == -1) return 1;
 				playerTotal += playerBet;
 				matchAmt = Math.abs(playerTotal - cpuTotal);
+				
 				int compBet = computerBet();
 				if (compBet == -1) return -1;
 				cpuTotal += computerBet();
 				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			else {
+				int compBet = computerBet();
+				if (compBet == -1) return -1;
 				cpuTotal += computerBet();
 				matchAmt = Math.abs(playerTotal - cpuTotal);
-				playerTotal += playerBet(matchAmt);
+				
+				int playerBet = playerBet(matchAmt);
+				if (playerBet == -1) return 1;
+				playerTotal += playerBet;
 				matchAmt = Math.abs(playerTotal - cpuTotal);
 			}
 			betcycle++;
-		}		
+		}
+		return 0;
 	}
 	
 	public void printGameState() {
 		System.out.println("Your cards: " + player[0] + ", " + player[1]);
 		System.out.println("Your chips: " + playerchips);
 		System.out.println("Pot: " + pot);
+		if (boardCards == 0) System.out.println("Board is empty.");
+		else {
+			System.out.print("Board: ");
+			for (int i = 0; i < boardCards; i++) {
+				System.out.print(board[i] + " ");
+			}
+			System.out.println();
+		}
+	}
+	
+	//returns 1 if cpu has better hand, -1 if player has better hand
+	public int cmp(cpu, player) {
+		return 0;
 	}
 }
 	
