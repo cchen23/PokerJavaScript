@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>PokerAI Test</title>
+		<script type="text/javascript" src="atomantic/playingCards.js"></script>
+		<script>
+			
+		</script>
+		<style type="text/css">
+			p.ex1 {
+				font: 100px Playing Cards;
+				color: white;
+			}
+		</style>
+	<body>
+		<script>
+			document.body.style.backgroundColor = "#008000";
+			document.write("Pot: 1000" + "</br>");
+			document.write("Small Blind: 10" + "</br>");
+			document.write("Big Blind: 20" + "</br>");
+			document.write("Computer's money: " + "</br>"); // update variable
+			document.write("My money: " + "</br>"); // update variable
+		</script>
+		<p id="foldid">0</p>
+		<p id="callid">0</p>
+		<p id="checkid">0</p>
+		<p id="raiseid">0</p>
+		<button type="button" onclick="fold() ">Fold</button>
+		<button type="button" onclick="call() ">Call</button>
+		<button type="button" onclick="check() ">Check</button>
+		<button type="button" onclick="raise() ">Raise</button>
+		<script>
+			function fold() {
+				var x = parseInt(document.getElementById("foldid").innerHTML,10);
+				var xNew = x + 1;
+				document.getElementById("foldid").innerHTML = xNew;
+			}
+			function call() {
+				var x = parseInt(document.getElementById("callid").innerHTML,10);
+				var xNew = x + 1;
+				document.getElementById("callid").innerHTML = xNew;
+			}
+			function check() {
+				var x = parseInt(document.getElementById("checkid").innerHTML,10);
+				var xNew = x + 1;
+				document.getElementById("checkid").innerHTML = xNew;
+			}
+			function raise() {
+				var x = parseInt(document.getElementById("raiseid").innerHTML,10);
+				var xNew = x + 1;
+				document.getElementById("raiseid").innerHTML = xNew;
+			}
+		</script>
+		<br>
+		<br>
+		<p class="ex1">a</p>
+	</body>
+</html>
