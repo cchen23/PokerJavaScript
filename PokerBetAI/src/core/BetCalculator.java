@@ -94,7 +94,7 @@ public class BetCalculator {
 	
 	//Return probability of win
 	private double probWin(Card[] compCards, Card[] shownCards) {
-		ProbCalculator prob = new ProbCalculator(compCards, shownCards);
+		ProbCalculator prob = new ProbCalculator(compCards, shownCards, boardCards);
 		return prob.probWin();
 	}
 }
